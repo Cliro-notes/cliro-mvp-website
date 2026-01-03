@@ -58,7 +58,7 @@ Campos típicos (simples):
 Nada de passwords, Nada de sesiones, Solo POST al backend
 
 
-📌 _**El homepage debe verse como un storyboard, no como un archivo gigante.**_
+📌 _**El homepage debe verse como un storyboard, no como un archivo gigante.**_ \
 Si alguien abre page.tsx y no entiende la página en 10 segundos → está mal.
 
 
