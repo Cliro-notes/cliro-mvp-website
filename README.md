@@ -46,7 +46,7 @@ web/ \
 └─ package.json \
 
 ### Caraceristicas del Sitio Web
-_**Cuestionario para usuarios interesados con los siguientes campos (deben viajar a la BD a traves del backend)**_
+📌 _**Cuestionario para usuarios interesados con los siguientes campos (deben viajar a la BD a traves del backend)**_
 Campos típicos (simples):
 - Email (required)
 - Nombre (optional)
@@ -55,16 +55,14 @@ Campos típicos (simples):
 - Idioma preferido
 - Purpose (textarea corto)
 
-📌 Nada de passwords
-📌 Nada de sesiones
-📌 Solo POST al backend
+Nada de passwords, Nada de sesiones, Solo POST al backend
 
 
-_**El homepage debe verse como un storyboard, no como un archivo gigante.**_
-📌 Si alguien abre page.tsx y no entiende la página en 10 segundos → está mal.
+📌 _**El homepage debe verse como un storyboard, no como un archivo gigante.**_
+Si alguien abre page.tsx y no entiende la página en 10 segundos → está mal.
 
 
-_**Secciones ≠ Componentes UI**_
+📌 _**Secciones ≠ Componentes UI**_
 - Identificar de forma correcta el folder designado para cada elemento, seccion o diseño \
 components/ \
 ├─ sections/ \
