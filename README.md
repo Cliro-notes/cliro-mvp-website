@@ -1,74 +1,74 @@
-# Frontend(Website) de Cliro Notes para el MVP
+# Frontend (Website) de Cliro Notes para el MVP
 Este repositorio sirve para todo lo que modificara el DOM y todo lo que se use directamente de la extension o con lo que el usuario interactue. \
 Se desarrollara en JavaScript y React + Vite
 
 ## Estructura / Arquitectura
-Buscar video en YT de Extensiones de Google con React \
-Algo parecido a esto (consultar con ChatGPT, Deepseek, Gemini, etc): \
-extension/ \
-├─ public/ \
-│  ├─ manifest.json \
-│  └─ icons/ \
-│     ├─ icon-16.png \
-│     ├─ icon-48.png \
-│     └─ icon-128.png \
+Website que servira para presentar el proyecto y mas que nada para manejar la lista de espera para usuarios interesados. \
+OnePage + waitlist (no auth, no passwords, cero fricción) \
+web/ \
+├─ app/ \
+│  ├─ layout.tsx          # Layout base (html, body) \
+│  ├─ page.tsx            # Homepage / OnePage \
+│  ├─ globals.css         # Tailwind base \
+│  │ \
+│  └─ components/ \
+│     ├─ sections/        # Secciones grandes del OnePage \
+│     │  ├─ Hero.tsx \
+│     │  ├─ ValueProp.tsx \
+│     │  ├─ Waitlist.tsx \
+│     │  ├─ HowItWorks.tsx \
+│     │  ├─ FAQ.tsx \
+│     │  └─ ... \
+│     │ \
+│     ├─ forms/           # Formularios \
+│     │  ├─ WaitlistForm.tsx \
+│     │  └─ ... \
+│     │ \
+│     ├─ ui/              # Componentes pequeños reutilizables \
+│     │  ├─ Input.tsx \
+│     │  ├─ Button.tsx \
+│     │  ├─ Select.tsx \
+│     │  └─ ... \
+│     │ \
+│     └─ layout/          # Header / Footer si los necesitas \
+│        ├─ Header.tsx \
+│        ├─ Footer.tsx \
+│        └─ ... \
 │ \
-├─ src/ \
-│  ├─ popup/                 # React app (UI) \
-│  │  ├─ App.tsx \
-│  │  ├─ main.tsx \
-│  │  ├─ components/ \
-│  │  │  ├─ ActionButton.tsx \
-│  │  │  ├─ LanguageSelect.tsx \
-│  │  │  └─ ResultView.tsx \
-│  │  ├─ hooks/ \
-│  │  │  ├─ useSelection.ts \
-│  │  │  └─ useAuth.ts \
-│  │  ├─ styles/ \
-│  │  │  └─ index.css        # Tailwind entry \
-│  │  └─ types.ts \
-│  │ \
-│  ├─ content/ \
-│  │  └─ index.ts            # DOM interaction \
-│  │ \
-│  ├─ background/ \
-│  │  └─ index.ts            # auth, API proxy \
-│  │ \
-│  ├─ shared/ \
-│  │  ├─ api.ts              # backend calls \
-│  │  ├─ storage.ts          # chrome.storage wrapper \
-│  │  └─ constants.ts \
-│  │ \
-│  └─ env.d.ts \
+├─ lib/ \
+│  ├─ api.ts              # fetch al backend (waitlist) \
+│  ├─ validators.ts       # validaciones simples (email, etc) \
+│  └─ constants.ts \
 │ \
-├─ tailwind.config.js \
+├─ tailwind.config.ts \
 ├─ postcss.config.js \
-├─ vite.config.ts \
 ├─ tsconfig.json \
 └─ package.json \
 
-### Qué es cada cosa?
-_**popup/ (Territorio React, es lo que aparece cuando el usuario da click al icono superior de la extension)**_
-- Toda la interfaz de usuario
-- Toda la lógica React
-- Todos los ganchos
+### Caraceristicas del Sitio Web
+_**Cuestionario para usuarios interesados con los siguientes campos (deben viajar a la BD a traves del backend)**_
+Campos típicos (simples):
+- Email (required)
+- Nombre (optional)
+- Ciudad / País
+- Ocupación
+- Idioma preferido
+- Purpose (textarea corto)
+
+📌 Nada de passwords
+📌 Nada de sesiones
+📌 Solo POST al backend
 
 
-
-_**content/ (Autoridad DOM)**_
-- Lee el texto seleccionado
-- Inyecta resaltados/superposiciones de interfaz de usuario
-- Envía mensajes al fondo
-
-📌 No se usa React aquí
-📌 TypeScript/JavaScript simple
-📌 Aquí es donde debe ir window.getSelection()
+_**El homepage debe verse como un storyboard, no como un archivo gigante.**_
+📌 Si alguien abre page.tsx y no entiende la página en 10 segundos → está mal.
 
 
+_**Secciones ≠ Componentes UI**_
+- Identificar de forma correcta el folder designado para cada elemento, seccion o diseño \
+components/ \
+├─ sections/ \
+├─ forms/ \
+├─ ui/ \
 
-_**background/ (Broker de confianza)**_
-- Almacena tokens de autenticación
-- Se comunica con FastAPI
-- Aplica limitación de velocidad
-- Recibe mensajes de popup/content
 
