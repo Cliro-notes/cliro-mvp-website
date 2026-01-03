@@ -1,6 +1,6 @@
 # Frontend (Website) de Cliro Notes para el MVP
 Este repositorio sirve para todo lo que modificara el DOM y todo lo que se use directamente de la extension o con lo que el usuario interactue. \
-Se desarrollara en Next.JS
+Se desarrollara en Next.JS por si facil manejo de API y de SEO (para se encontrados de forma sencilla en Google)
 
 ## Estructura / Arquitectura
 Website que servira para presentar el proyecto y mas que nada para manejar la lista de espera para usuarios interesados. \
