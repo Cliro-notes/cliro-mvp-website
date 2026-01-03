@@ -55,7 +55,7 @@ Campos típicos (simples):
 - Idioma preferido
 - Purpose (textarea corto)
 
-Nada de passwords, Nada de sesiones, Solo POST al backend
+•  Nada de passwords  •  Nada de sesiones  •  Solo POST al backend
 
 
 📌 _**El homepage debe verse como un storyboard, no como un archivo gigante.**_ \
