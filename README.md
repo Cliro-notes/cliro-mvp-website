@@ -63,7 +63,7 @@ Si alguien abre page.tsx y no entiende la página en 10 segundos → está mal.
 
 
 📌 _**Secciones ≠ Componentes UI**_
-- Identificar de forma correcta el folder designado para cada elemento, seccion o diseño \
+Identificar de forma correcta el folder designado para cada elemento, seccion o diseño \
 components/ \
 ├─ sections/ \
 ├─ forms/ \
