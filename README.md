@@ -22,18 +22,19 @@ Campos típicos (simples):
 📌 **El homepage debe verse como un storyboard, no como un archivo gigante.** \
 Si alguien abre la pagina y no entiende la página en 10 segundos → está mal.
 
+---
 
-📌 **Secciones ≠ Componentes UI** \
+## Secciones ≠ Componentes UI
 Identificar de forma correcta el folder designado para cada elemento, seccion o diseño \
 
 📁 app/ \
-**layout.jsx**
+**🗎 layout.jsx**
 - Controla TODO el layout global
 - Define <html>, <body>, fuentes, metadata
 - Se renderiza una sola vez
 - Es el layout raíz del sitio
 
-**page.jsx** \
+**🗎 page.jsx** \
 Importa y ordena las secciones \
 Ejemplo:
 ```bash
@@ -41,7 +42,7 @@ Ejemplo:
 <ValueProp />
 <Waitlist />
 ```
-**global.css**
+**🗎 global.css**
 - Tailwind Base
 - Estilos Globales
 
