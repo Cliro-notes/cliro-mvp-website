@@ -11,10 +11,8 @@ OnePage + waitlist (no auth, no passwords, cero fricción) \
 Campos típicos (simples):
 - Email (required)
 - Nombre (optional)
-- Ciudad / País
 - Ocupación
 - Idioma preferido
-- Purpose (textarea corto)
 
 •  Nada de passwords  •  Nada de sesiones  •  Solo POST al backend
 
