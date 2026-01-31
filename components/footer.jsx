@@ -1,5 +1,3 @@
-import Image from "next/image";
-
 export default function Footer() {
 return (
   <> 
@@ -21,11 +19,9 @@ return (
 
     <div className="mx-auto max-w-4xl">
       <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
-        <Image
-          src="/logo.png"
+        <img
+          src="/flowanimation3.gif"
           alt="Cliro"
-          width={60}
-          height={30}
           className="h-12 w-auto opacity-50"
         />
 
