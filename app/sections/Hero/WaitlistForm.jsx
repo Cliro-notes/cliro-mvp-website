@@ -1,25 +1,43 @@
-"use client";
-
 import {
     Check,
     Mail,
     User,
-    Loader2
+    Loader2,
+    X,
+    AlertCircle,
+    Clock,
+    FileText,
+    BookOpen,
+    Video,
+    GraduationCap,
+    Briefcase,
+    Accessibility,
+    HelpCircle
 } from "lucide-react";
 import {
     COLORS,
     OPACITY,
     TYPOGRAPHY,
-    inputClass,
-    WHY_CLIRO_ICONS,
-    LANGUAGE_FLAGS,
-    WHY_CLIRO_OPTIONS,
-    LANGUAGE_OPTIONS,
     MAX_LANGUAGES
 } from "./constants";
 
+// Icon mapping for interest reasons
+const INTEREST_ICONS = {
+    productivity: Clock,
+    writing: FileText,
+    learning: BookOpen,
+    content: Video,
+    students: GraduationCap,
+    business: Briefcase,
+    accessibility: Accessibility,
+    other: HelpCircle
+};
+
+// Fallback icon
+const DEFAULT_ICON = HelpCircle;
+
 export default function WaitlistForm({
-    dropdownOpen,
+    dropdownOpen = true,
     isClosing,
     status,
     errorMessage,
@@ -28,295 +46,332 @@ export default function WaitlistForm({
     onChange,
     onToggleWhyCliro,
     onToggleLanguage,
-    onSubmit
+    onSubmit,
+    interestReasons = [],
+    supportedLanguages = []
 }) {
-    return (
-        <div className="relative">
-            <div className="max-w-2xl mx-auto">
-                <div className="text-center mb-12">
-                    <h3 className="text-3xl md:text-4xl font-semibold mb-4"
-                        style={{
-                            fontFamily: TYPOGRAPHY.fontSans,
-                            color: COLORS.dark,
-                        }}>
-                        Join the Waitlist
-                    </h3>
-                    <p className="text-lg"
-                        style={{
-                            color: OPACITY.dark30,
-                            fontFamily: TYPOGRAPHY.fontSans,
-                        }}>
-                        Be among the first to experience Cliro's revolutionary approach to note-taking.
-                    </p>
-                </div>
+    // Prevent form submission on Enter key in input fields
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+        }
+    };
 
-                {/* Waitlist Button */}
-                <button
-                    type="button"
-                    onClick={onJoinClick}
-                    className="w-full max-w-md mx-auto font-mono text-lg font-medium py-4 rounded-xl mb-8 transition-all duration-300 hover:scale-105 hover:shadow-xl block"
+    // Handle "Why Cliro?" selection - single select only
+    const handleWhyCliroClick = (reasonId) => {
+        if (form.whyCliro.includes(reasonId)) {
+            // If already selected, deselect it
+            onToggleWhyCliro(reasonId);
+        } else {
+            // If not selected, select only this one (remove others)
+            if (form.whyCliro.length > 0) {
+                // Remove the existing selection
+                onToggleWhyCliro(form.whyCliro[0]);
+            }
+            // Add the new selection
+            onToggleWhyCliro(reasonId);
+        }
+    };
+
+    // Get icon for interest reason
+    const getInterestIcon = (reasonId) => {
+        const Icon = INTEREST_ICONS[reasonId] || DEFAULT_ICON;
+        return Icon;
+    };
+
+    // Get display name for interest reason
+    const getInterestDisplayName = (reason) => {
+        return reason.label || reason.name || reason.id || reason;
+    };
+
+    // Get display name for language
+    const getLanguageDisplayName = (language) => {
+        return language.name || language.code || language;
+    };
+
+    // Get flag for language
+    const getLanguageFlag = (language) => {
+        return language.flag || '🌐';
+    };
+
+    return (
+        <div className="w-full">
+            <div className="w-full">
+                <div
+                    className={`overflow-hidden rounded-xl border-2 border-dashed backdrop-blur-sm transition-all duration-300 ${isClosing ? "animate-dropdown-out" : "animate-dropdown-in"
+                        }`}
                     style={{
-                        color: COLORS.dark,
-                        border: `3px dashed ${OPACITY.dark20}`,
-                        backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                        boxShadow: '0 10px 30px rgba(0, 0, 0, 0.1)'
+                        borderColor: OPACITY.dark20,
+                        backgroundColor: `rgba(255, 255, 255, 0.9)`,
+                        boxShadow: '0 10px 40px rgba(0, 0, 0, 0.08)',
                     }}
                 >
-                    [join waitlist]
-                </button>
-
-                {/* Waitlist Form */}
-                {(dropdownOpen || isClosing) && (
-                    <div className="mt-8 w-full max-w-2xl mx-auto">
-                        <div
-                            className={`overflow-hidden rounded-2xl border-3 border-dashed backdrop-blur-lg transition-all duration-500 ${isClosing ? "animate-dropdown-out" : "animate-dropdown-in"
-                                }`}
-                            style={{
-                                borderColor: OPACITY.dark20,
-                                backgroundColor: `rgba(255, 255, 255, 0.95)`,
-                                boxShadow: '0 30px 80px rgba(0, 0, 0, 0.2)',
-                            }}
-                        >
-                            <form
-                                onSubmit={onSubmit}
-                                className="p-8"
+                    <form
+                        onSubmit={onSubmit}
+                        className="p-6"
+                    >
+                        {/* Form header */}
+                        <div className="flex items-center justify-between mb-6">
+                            <h2
+                                className="text-xl font-semibold"
+                                style={{
+                                    color: COLORS.dark,
+                                    fontFamily: TYPOGRAPHY.fontSans,
+                                }}
                             >
-                                <h2
-                                    className="text-2xl font-semibold mb-8 text-center"
+                                Complete your profile
+                            </h2>
+                            <button
+                                type="button"
+                                onClick={onJoinClick}
+                                className="p-1.5 rounded-full hover:bg-white/50 transition-colors"
+                                style={{
+                                    color: OPACITY.dark30,
+                                }}
+                            >
+                                <X size={18} />
+                            </button>
+                        </div>
+
+                        {/* Email & Name fields */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                            <div className="relative">
+                                <label
+                                    className="block text-xs font-medium mb-1.5"
                                     style={{
-                                        color: COLORS.dark,
+                                        color: OPACITY.dark40,
                                         fontFamily: TYPOGRAPHY.fontSans,
                                     }}
                                 >
-                                    Join the waitlist
-                                </h2>
-
-                                <div className="space-y-6">
-                                    {/* Email field */}
-                                    <div className="relative">
-                                        <div className="absolute left-4 top-1/2 transform -translate-y-1/2">
-                                            <Mail size={18} style={{ color: OPACITY.dark30 }} />
-                                        </div>
-                                        <input
-                                            type="email"
-                                            name="email"
-                                            placeholder="Your email address"
-                                            value={form.email}
-                                            onChange={onChange}
-                                            required
-                                            className={`${inputClass} pl-12`}
-                                            style={{
-                                                color: COLORS.dark,
-                                                borderColor: OPACITY.dark20,
-                                                fontFamily: TYPOGRAPHY.fontSans,
-                                            }}
-                                        />
+                                    Email
+                                </label>
+                                <div className="relative">
+                                    <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
+                                        <Mail size={16} style={{ color: OPACITY.dark30 }} />
                                     </div>
-
-                                    {/* Name field */}
-                                    <div className="relative">
-                                        <div className="absolute left-4 top-1/2 transform -translate-y-1/2">
-                                            <User size={18} style={{ color: OPACITY.dark30 }} />
-                                        </div>
-                                        <input
-                                            type="text"
-                                            name="name"
-                                            placeholder="Your name"
-                                            value={form.name}
-                                            onChange={onChange}
-                                            required
-                                            className={`${inputClass} pl-12`}
-                                            style={{
-                                                color: COLORS.dark,
-                                                borderColor: OPACITY.dark20,
-                                                fontFamily: TYPOGRAPHY.fontSans,
-                                            }}
-                                        />
-                                    </div>
-                                </div>
-
-                                {/* Why Cliro Section */}
-                                <div className="mt-8">
-                                    <label
-                                        className="block text-sm font-medium mb-4 text-left"
+                                    <input
+                                        type="email"
+                                        name="email"
+                                        placeholder="your@email.com"
+                                        value={form.email}
+                                        onChange={onChange}
+                                        onKeyDown={handleKeyDown}
+                                        required
+                                        className="w-full bg-transparent py-3 pl-10 pr-4 text-sm rounded-lg border border-dashed outline-none transition-all placeholder:opacity-50"
                                         style={{
-                                            color: OPACITY.dark30,
+                                            color: COLORS.dark,
+                                            borderColor: OPACITY.dark20,
                                             fontFamily: TYPOGRAPHY.fontSans,
                                         }}
-                                    >
-                                        Why Cliro? (select all that apply)
-                                    </label>
-                                    <div className="grid grid-cols-2 gap-3">
-                                        {WHY_CLIRO_OPTIONS.map((opt) => {
-                                            const selected = form.whyCliro.includes(opt);
-                                            const Icon = WHY_CLIRO_ICONS[opt];
-                                            return (
-                                                <button
-                                                    key={opt}
-                                                    type="button"
-                                                    onClick={() => onToggleWhyCliro(opt)}
-                                                    className={`relative flex flex-col items-center justify-center p-3 rounded-xl border transition-all duration-200 ${selected
-                                                        ? 'border-opacity-100 scale-95'
-                                                        : 'border-opacity-20 hover:border-opacity-40 hover:bg-white/50'
-                                                        }`}
-                                                    style={{
-                                                        borderColor: selected ? COLORS.dark : OPACITY.dark20,
-                                                        borderWidth: '2px',
-                                                        borderStyle: selected ? 'solid' : 'dashed',
-                                                        backgroundColor: selected ? 'rgba(13, 9, 6, 0.05)' : 'transparent',
-                                                        fontFamily: TYPOGRAPHY.fontSans,
-                                                    }}
-                                                >
-                                                    {selected && (
-                                                        <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full flex items-center justify-center"
-                                                            style={{ backgroundColor: COLORS.dark }}>
-                                                            <Check size={12} color="white" />
-                                                        </div>
-                                                    )}
-                                                    <Icon size={20} style={{ color: selected ? COLORS.dark : OPACITY.dark30, marginBottom: '8px' }} />
-                                                    <span className="text-xs text-center leading-tight font-medium"
-                                                        style={{ color: selected ? COLORS.dark : OPACITY.dark40 }}>
-                                                        {opt}
-                                                    </span>
-                                                </button>
-                                            );
-                                        })}
-                                    </div>
+                                    />
                                 </div>
+                            </div>
 
-                                {/* Languages Section */}
-                                <div className="mt-8">
-                                    <div className="flex items-center justify-between mb-4">
-                                        <label
-                                            className="block text-sm font-medium text-left"
-                                            style={{
-                                                color: OPACITY.dark30,
-                                                fontFamily: TYPOGRAPHY.fontSans,
-                                            }}
-                                        >
-                                            Main languages
-                                        </label>
-                                        <span className="text-xs"
-                                            style={{
-                                                color: OPACITY.dark30,
-                                                fontFamily: TYPOGRAPHY.fontSans,
-                                            }}>
-                                            {form.mainLanguages.length}/{MAX_LANGUAGES} selected
-                                        </span>
-                                    </div>
-                                    <div className="grid grid-cols-2 gap-3">
-                                        {LANGUAGE_OPTIONS.map((opt) => {
-                                            const selected = form.mainLanguages.includes(opt);
-                                            const disabled = !selected && form.mainLanguages.length >= MAX_LANGUAGES;
-                                            return (
-                                                <button
-                                                    key={opt}
-                                                    type="button"
-                                                    onClick={() => !disabled && onToggleLanguage(opt)}
-                                                    disabled={disabled}
-                                                    className={`relative flex items-center p-3 rounded-xl border transition-all duration-200 ${selected
-                                                        ? 'border-opacity-100 scale-95'
-                                                        : disabled
-                                                            ? 'opacity-40 cursor-not-allowed'
-                                                            : 'border-opacity-20 hover:border-opacity-40 hover:bg-white/50'
-                                                        }`}
-                                                    style={{
-                                                        borderColor: selected ? COLORS.dark : OPACITY.dark20,
-                                                        borderWidth: '2px',
-                                                        borderStyle: selected ? 'solid' : 'dashed',
-                                                        backgroundColor: selected ? 'rgba(13, 9, 6, 0.05)' : 'transparent',
-                                                        fontFamily: TYPOGRAPHY.fontSans,
-                                                    }}
-                                                >
-                                                    {selected && (
-                                                        <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full flex items-center justify-center"
-                                                            style={{ backgroundColor: COLORS.dark }}>
-                                                            <Check size={12} color="white" />
-                                                        </div>
-                                                    )}
-                                                    <span className="text-xl mr-3">{LANGUAGE_FLAGS[opt]}</span>
-                                                    <span className="text-sm font-medium"
-                                                        style={{ color: selected ? COLORS.dark : disabled ? OPACITY.dark20 : OPACITY.dark40 }}>
-                                                        {opt}
-                                                    </span>
-                                                </button>
-                                            );
-                                        })}
-                                    </div>
-                                </div>
-
-                                {/* Status Messages */}
-                                {status === "error" && (
-                                    <div className="mt-6 p-4 rounded-xl text-center"
-                                        style={{
-                                            backgroundColor: 'rgba(239, 68, 68, 0.1)',
-                                            border: '2px dashed rgba(239, 68, 68, 0.3)',
-                                        }}>
-                                        <p
-                                            className="text-sm font-medium"
-                                            style={{
-                                                color: COLORS.statusAttention,
-                                                fontFamily: TYPOGRAPHY.fontSans,
-                                            }}
-                                        >
-                                            {errorMessage}
-                                        </p>
-                                    </div>
-                                )}
-                                {status === "success" && (
-                                    <div className="mt-6 p-4 rounded-xl text-center"
-                                        style={{
-                                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                                            border: '2px dashed rgba(16, 185, 129, 0.3)',
-                                        }}>
-                                        <p
-                                            className="text-sm font-medium"
-                                            style={{
-                                                color: COLORS.statusGood,
-                                                fontFamily: TYPOGRAPHY.fontSans,
-                                            }}
-                                        >
-                                            You're on the list. We'll be in touch.
-                                        </p>
-                                    </div>
-                                )}
-
-                                {/* Submit Button */}
-                                <button
-                                    type="submit"
-                                    disabled={status === "loading"}
-                                    className="mt-8 w-full font-mono text-lg font-medium transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed py-4 rounded-xl"
+                            <div className="relative">
+                                <label
+                                    className="block text-xs font-medium mb-1.5"
                                     style={{
-                                        color: COLORS.dark,
-                                        border: `3px dashed ${OPACITY.dark20}`,
-                                        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                                        color: OPACITY.dark40,
+                                        fontFamily: TYPOGRAPHY.fontSans,
                                     }}
                                 >
-                                    {status === "loading" ? (
-                                        <span className="flex items-center justify-center">
-                                            <Loader2 size={20} className="animate-spin mr-3" />
-                                            sending…
-                                        </span>
-                                    ) : (
-                                        "[submit]"
-                                    )}
-                                </button>
+                                    Name
+                                </label>
+                                <div className="relative">
+                                    <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
+                                        <User size={16} style={{ color: OPACITY.dark30 }} />
+                                    </div>
+                                    <input
+                                        type="text"
+                                        name="name"
+                                        placeholder="Your name"
+                                        value={form.name}
+                                        onChange={onChange}
+                                        onKeyDown={handleKeyDown}
+                                        required
+                                        className="w-full bg-transparent py-3 pl-10 pr-4 text-sm rounded-lg border border-dashed outline-none transition-all placeholder:opacity-50"
+                                        style={{
+                                            color: COLORS.dark,
+                                            borderColor: OPACITY.dark20,
+                                            fontFamily: TYPOGRAPHY.fontSans,
+                                        }}
+                                    />
+                                </div>
+                            </div>
+                        </div>
 
-                                {/* Close form button */}
-                                <button
-                                    type="button"
-                                    onClick={onJoinClick}
-                                    className="mt-6 w-full font-mono text-sm font-medium opacity-60 hover:opacity-100 transition-all duration-200"
+                        {/* Why Cliro Section */}
+                        <div className="mb-6">
+                            <label
+                                className="block text-xs font-medium mb-3"
+                                style={{
+                                    color: OPACITY.dark40,
+                                    fontFamily: TYPOGRAPHY.fontSans,
+                                }}
+                            >
+                                Why Cliro? (select one)
+                            </label>
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                                {interestReasons.map((reason) => {
+                                    const reasonId = reason.id || reason;
+                                    const selected = form.whyCliro.includes(reasonId);
+                                    const Icon = getInterestIcon(reasonId);
+
+                                    return (
+                                        <button
+                                            key={reasonId}
+                                            type="button"
+                                            onClick={() => handleWhyCliroClick(reasonId)}
+                                            className={`relative flex flex-col items-center justify-center p-2.5 rounded-lg border transition-all duration-150 ${selected
+                                                ? 'border-opacity-100'
+                                                : 'border-opacity-20 hover:border-opacity-40 hover:bg-white/30'
+                                                }`}
+                                            style={{
+                                                borderColor: selected ? COLORS.dark : OPACITY.dark20,
+                                                borderWidth: '1.5px',
+                                                borderStyle: selected ? 'solid' : 'dashed',
+                                                backgroundColor: selected ? 'rgba(13, 9, 6, 0.03)' : 'transparent',
+                                                fontFamily: TYPOGRAPHY.fontSans,
+                                            }}
+                                        >
+                                            {selected && (
+                                                <div className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full flex items-center justify-center"
+                                                    style={{ backgroundColor: COLORS.dark }}>
+                                                    <Check size={10} color="white" />
+                                                </div>
+                                            )}
+                                            <Icon size={16} style={{ color: selected ? COLORS.dark : OPACITY.dark30, marginBottom: '6px' }} />
+                                            <span className="text-xs text-center leading-tight"
+                                                style={{ color: selected ? COLORS.dark : OPACITY.dark40 }}>
+                                                {getInterestDisplayName(reason)}
+                                            </span>
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </div>
+
+                        {/* Languages Section */}
+                        <div className="mb-6">
+                            <div className="flex items-center justify-between mb-3">
+                                <label
+                                    className="block text-xs font-medium"
+                                    style={{
+                                        color: OPACITY.dark40,
+                                        fontFamily: TYPOGRAPHY.fontSans,
+                                    }}
+                                >
+                                    Main languages
+                                </label>
+                                <span className="text-xs"
                                     style={{
                                         color: OPACITY.dark30,
+                                        fontFamily: TYPOGRAPHY.fontSans,
+                                    }}>
+                                    {form.mainLanguages.length}/{MAX_LANGUAGES}
+                                </span>
+                            </div>
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                                {supportedLanguages.map((language) => {
+                                    const languageCode = language.code || language;
+                                    const selected = form.mainLanguages.includes(languageCode);
+
+                                    return (
+                                        <button
+                                            key={languageCode}
+                                            type="button"
+                                            onClick={() => onToggleLanguage(languageCode)}
+                                            className={`relative flex items-center p-2.5 rounded-lg border transition-all duration-150 ${selected
+                                                ? 'border-opacity-100'
+                                                : 'border-opacity-20 hover:border-opacity-40 hover:bg-white/30'
+                                                }`}
+                                            style={{
+                                                borderColor: selected ? COLORS.dark : OPACITY.dark20,
+                                                borderWidth: '1.5px',
+                                                borderStyle: selected ? 'solid' : 'dashed',
+                                                backgroundColor: selected ? 'rgba(13, 9, 6, 0.03)' : 'transparent',
+                                                fontFamily: TYPOGRAPHY.fontSans,
+                                            }}
+                                        >
+                                            {selected && (
+                                                <div className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full flex items-center justify-center"
+                                                    style={{ backgroundColor: COLORS.dark }}>
+                                                    <Check size={10} color="white" />
+                                                </div>
+                                            )}
+                                            <span className="text-lg mr-2">{getLanguageFlag(language)}</span>
+                                            <span className="text-xs"
+                                                style={{ color: selected ? COLORS.dark : OPACITY.dark40 }}>
+                                                {getLanguageDisplayName(language)}
+                                            </span>
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </div>
+
+                        {/* Error Message */}
+                        {errorMessage && status !== "success" && (
+                            <div className="mb-4 p-3 rounded-lg text-center flex items-center justify-center gap-2"
+                                style={{
+                                    backgroundColor: 'rgba(239, 68, 68, 0.05)',
+                                    border: '1px dashed rgba(239, 68, 68, 0.2)',
+                                }}>
+                                <AlertCircle size={14} style={{ color: COLORS.statusAttention }} />
+                                <p
+                                    className="text-xs font-medium"
+                                    style={{
+                                        color: COLORS.statusAttention,
+                                        fontFamily: TYPOGRAPHY.fontSans,
                                     }}
                                 >
-                                    [close form]
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                )}
+                                    {errorMessage}
+                                </p>
+                            </div>
+                        )}
+
+                        {/* Success Message */}
+                        {status === "success" && (
+                            <div className="mb-4 p-3 rounded-lg text-center flex items-center justify-center gap-2"
+                                style={{
+                                    backgroundColor: 'rgba(16, 185, 129, 0.05)',
+                                    border: '1px dashed rgba(16, 185, 129, 0.2)',
+                                }}>
+                                <Check size={14} style={{ color: COLORS.statusGood }} />
+                                <p
+                                    className="text-xs font-medium"
+                                    style={{
+                                        color: COLORS.statusGood,
+                                        fontFamily: TYPOGRAPHY.fontSans,
+                                    }}
+                                >
+                                    You're on the list. We'll be in touch.
+                                </p>
+                            </div>
+                        )}
+
+                        {/* Submit Button */}
+                        <button
+                            type="submit"
+                            disabled={status === "loading"}
+                            className="w-full py-3 text-sm font-mono rounded-lg transition-all duration-200 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
+                            style={{
+                                color: COLORS.dark,
+                                border: `1.5px dashed ${OPACITY.dark20}`,
+                                backgroundColor: 'rgba(255, 255, 255, 0.6)',
+                            }}
+                        >
+                            {status === "loading" ? (
+                                <span className="flex items-center justify-center">
+                                    <Loader2 size={16} className="animate-spin mr-2" />
+                                    sending…
+                                </span>
+                            ) : (
+                                "[submit]"
+                            )}
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     );
