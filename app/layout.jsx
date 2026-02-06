@@ -1,5 +1,5 @@
 import "./globals.css";
-import Header from "./ui/header";
+import Header from "./sections/header";
 import Footer from "./sections/footer";
 import { BackgroundElements } from "./ui/BackgroundElements";
 

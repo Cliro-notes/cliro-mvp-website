@@ -1,11 +1,9 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { submitWaitlist } from "../../../lib/api";
+import { joinWaitlist } from "../../utils/api";
 import HeroTitle from "./HeroTitle";
 import VideoSection from "./VideoSection";
-import FeaturesSection from "./FeaturesSection";
-import WaitlistForm from "./WaitlistForm";
 
 export default function Hero() {
     const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -15,8 +13,8 @@ export default function Hero() {
     const [form, setForm] = useState({
         email: "",
         name: "",
-        whyCliro: [],
-        mainLanguages: [],
+        whyCliro: [], // Will store interest_reason ID
+        mainLanguages: [], // Will store language codes
     });
     const [isVideoSticky, setIsVideoSticky] = useState(false);
     const [scrollProgress, setScrollProgress] = useState(0);
@@ -97,23 +95,58 @@ export default function Hero() {
         });
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e, formData = form, message = "", newStatus = "loading") => {
         e.preventDefault();
-        setStatus("loading");
-        setErrorMessage("");
-        const { ok, error } = await submitWaitlist({
-            email: form.email.trim(),
-            name: form.name.trim(),
-            whyCliro: form.whyCliro,
-            mainLanguages: form.mainLanguages,
-        });
-        if (ok) {
-            setStatus("success");
-            setForm({ email: "", name: "", whyCliro: [], mainLanguages: [] });
-            setDropdownOpen(false);
-        } else {
-            setStatus("error");
-            setErrorMessage(error || "Something went wrong");
+        setStatus(newStatus);
+        setErrorMessage(message);
+
+        // If there's already an error message from validation, don't proceed
+        if (newStatus === "error") {
+            return;
+        }
+
+        // If it's loading state (actual form submission)
+        if (newStatus === "loading") {
+            try {
+                // Prepare data for backend using helper functions
+                const waitlistData = {
+                    email: formData.email.trim(),
+                    name: formData.name.trim(),
+                    interest_reason: formData.whyCliro[0], // Get first selected reason
+                    preferred_languages: formData.mainLanguages
+                };
+
+                console.log('Sending waitlist data:', waitlistData);
+
+                // Send to backend using the API utility
+                const result = await joinWaitlist(waitlistData);
+
+                if (result.success) {
+                    // Success
+                    setStatus("success");
+                    setErrorMessage("");
+                    setForm({ email: "", name: "", whyCliro: [], mainLanguages: [] });
+
+                    // Auto-close the form after success
+                    setTimeout(() => {
+                        setIsClosing(true);
+                        setTimeout(() => {
+                            setDropdownOpen(false);
+                            setIsClosing(false);
+                        }, 250);
+                    }, 3000);
+
+                } else {
+                    // Error from API
+                    setStatus("error");
+                    setErrorMessage(result.error || "Failed to join waitlist. Please try again.");
+                }
+
+            } catch (error) {
+                // Network or unexpected error
+                setStatus("error");
+                setErrorMessage(error.message || "Failed to join waitlist. Please try again.");
+            }
         }
     };
 
@@ -145,27 +178,37 @@ export default function Hero() {
         }
     };
 
-    const scrollToContent = () => {
-        // This should target the VideoSection
-        const videoSection = document.querySelector('[data-video-section]');
-        if (videoSection) {
-            videoSection.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'  // Align to top of viewport
-            });
+    // Handle email submission from HeroTitle
+    const handleShowFullForm = (email) => {
+        // Set the email in form if provided
+        if (email) {
+            setForm(prev => ({ ...prev, email }));
         }
+        // Open the dropdown form
+        setDropdownOpen(true);
     };
 
     return (
         <div className="relative">
-            {/* Hero Title Section */}
-            <HeroTitle onScrollToContent={scrollToContent} />
+            {/* Hero Title Section - Now includes the waitlist form */}
+            <HeroTitle
+                onShowFullForm={handleShowFullForm}
+                dropdownOpen={dropdownOpen}
+                isClosing={isClosing}
+                status={status}
+                errorMessage={errorMessage}
+                form={form}
+                onJoinClick={handleJoinClick}
+                onChange={handleChange}
+                onToggleWhyCliro={toggleWhyCliro}
+                onToggleLanguage={toggleLanguage}
+                onSubmit={handleSubmit}
+            />
 
             {/* Sticky Video Demo Section */}
             <VideoSection
                 isVideoSticky={isVideoSticky}
                 scrollProgress={scrollProgress}
-                onScrollToContent={scrollToContent}
                 isFullscreen={isFullscreen}
                 isPlaying={isPlaying}
                 isMuted={isMuted}
@@ -176,25 +219,6 @@ export default function Hero() {
                 onContainerRef={(ref) => videoContainerRef.current = ref}
                 onSectionRef={(ref) => stickySectionRef.current = ref}
             />
-
-            {/* Features Section */}
-            <FeaturesSection onContentRef={(ref) => contentSectionRef.current = ref} />
-
-            {/* Waitlist Form Section */}
-            <div className="max-w-6xl mx-auto px-4 pb-20 md:pb-32">
-                <WaitlistForm
-                    dropdownOpen={dropdownOpen}
-                    isClosing={isClosing}
-                    status={status}
-                    errorMessage={errorMessage}
-                    form={form}
-                    onJoinClick={handleJoinClick}
-                    onChange={handleChange}
-                    onToggleWhyCliro={toggleWhyCliro}
-                    onToggleLanguage={toggleLanguage}
-                    onSubmit={handleSubmit}
-                />
-            </div>
         </div>
     );
 }

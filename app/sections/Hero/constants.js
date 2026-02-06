@@ -1,12 +1,13 @@
 import {
     BookOpen,
-    Zap,
-    Search,
-    Folder,
-    ZapOff,
     HelpCircle,
     Target,
     Layers,
+    Clock,
+    Video,
+    GraduationCap,
+    Briefcase,
+    Accessibility,
     Brain,
     StickyNote,
     Bookmark,
@@ -18,54 +19,31 @@ import {
 // Import your constants
 import { COLORS, OPACITY, TYPOGRAPHY } from "../../ui/colors";
 
-// Updated input styles
+// Input styles
 export const inputClass =
     "w-full bg-transparent py-3.5 px-4 text-sm rounded-lg border border-dashed transition-all duration-200 focus:outline-none focus:border-opacity-60 placeholder:opacity-50";
 
-// Icon mapping for why Cliro options
 export const WHY_CLIRO_ICONS = {
-    "Better note-taking": BookOpen,
-    "Productivity": Zap,
-    "Research & learning": Search,
-    "Browser organization": Folder,
-    "Quick capture": ZapOff,
-    "Other": HelpCircle,
+    'Productivity': Clock,
+    'Writing': FileText,
+    'Learning': BookOpen,
+    'Content Creation': Video,
+    'Student Work': GraduationCap,
+    'Business': Briefcase,
+    'Accessibility': Accessibility,
+    'Other': HelpCircle,
 };
 
-// Country flag emojis for languages
 export const LANGUAGE_FLAGS = {
-    "English": "🇺🇸",
-    "Spanish": "🇪🇸",
-    "French": "🇫🇷",
-    "German": "🇩🇪",
-    "Portuguese": "🇵🇹",
-    "Italian": "🇮🇹",
-    "Dutch": "🇳🇱",
-    "Japanese": "🇯🇵",
-    "Chinese": "🇨🇳",
+    'English': '🇺🇸',
+    'Spanish': '🇪🇸',
+    'French': '🇫🇷',
+    'German': '🇩🇪',
+    'Italian': '🇮🇹',
+    'Portuguese': '🇵🇹',
 };
 
-export const WHY_CLIRO_OPTIONS = [
-    "Better note-taking",
-    "Productivity",
-    "Research & learning",
-    "Browser organization",
-    "Quick capture",
-    "Other",
-];
-
-export const LANGUAGE_OPTIONS = [
-    "English",
-    "Spanish",
-    "French",
-    "German",
-    "Portuguese",
-    "Italian",
-    "Dutch",
-    "Japanese",
-    "Chinese",
-];
-
+// We'll update MAX_LANGUAGES to match backend
 export const MAX_LANGUAGES = 3;
 
 export const FLOATING_ELEMENTS = [

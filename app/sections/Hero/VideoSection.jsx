@@ -135,19 +135,6 @@ export default function VideoSection({
                         </span>
                     </div>
                 </div>
-
-                {/* Scroll indicator when not sticky */}
-                {!isVideoSticky && (
-                    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
-                        <button
-                            onClick={onScrollToContent}
-                            className="flex flex-col items-center gap-1"
-                        >
-                            <span className="text-white/60 text-xs font-mono">Continue</span>
-                            <ChevronDown size={16} color="white" className="animate-bounce" />
-                        </button>
-                    </div>
-                )}
             </div>
 
             {/* Scroll progress indicator */}
