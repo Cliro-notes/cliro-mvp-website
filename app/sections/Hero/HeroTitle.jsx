@@ -13,8 +13,12 @@ export default function HeroTitle({
     errorMessage,
     form,
     onJoinClick,
+    // These props are not used directly but are passed down to WaitlistForm
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     onChange,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     onToggleWhyCliro,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     onToggleLanguage,
     onSubmit
 }) {
@@ -35,6 +39,7 @@ export default function HeroTitle({
     const editableRef = useRef(null);
     const emailInputRef = useRef(null);
     const lastHtmlRef = useRef("");
+    const videoRef = useRef(null);
 
     // Fetch backend config on component mount
     useEffect(() => {
@@ -50,6 +55,15 @@ export default function HeroTitle({
         };
 
         fetchConfig();
+    }, []);
+
+    // Initialize video to play in loop
+    useEffect(() => {
+        if (videoRef.current) {
+            videoRef.current.play().catch(e => {
+                console.log('Video autoplay failed:', e);
+            });
+        }
     }, []);
 
     // Handle click outside to save
@@ -227,23 +241,34 @@ export default function HeroTitle({
     return (
         <section className="relative flex items-center justify-center mt-[70px] px-4 py-8 md:py-12">
             <div className="relative z-10 text-center max-w-3xl">
-                {/* Logo with Chrome Extension badge */}
-                <div className="mb-4 relative">
-                    <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2">
-                        <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full"
-                            style={{
-                                backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                                border: `1px dashed ${OPACITY.dark20}`,
-                                backdropFilter: 'blur(10px)',
-                            }}>
-                            <div className="w-1.5 h-1.5 rounded-full"
-                                style={{ backgroundColor: COLORS.dark }} />
-                            <span className="text-xs font-mono"
-                                style={{ color: OPACITY.dark40 }}>
-                                Chrome Extension
-                            </span>
-                        </div>
-                    </div>
+
+
+                {/* Video Section - Added between description and email form */}
+                <div className="relative max-w-[225px] mx-auto overflow-hidden rounded-xl">
+                    <video
+                        ref={videoRef}
+                        src="/cliroHorizontal.mp4"
+                        className="w-full h-auto"
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        disablePictureInPicture
+                        disableRemotePlayback
+                        style={{
+                            pointerEvents: 'none', // Disable user interaction
+                            userSelect: 'none', // Prevent selection
+                        }}
+                        onContextMenu={(e) => e.preventDefault()} // Disable right-click
+                    >
+                        Your browser does not support the video tag.
+                    </video>
+                    {/* Overlay to prevent any interaction */}
+                    <div
+                        className="absolute inset-0 pointer-events-auto cursor-default"
+                        onClick={(e) => e.preventDefault()}
+                        onDoubleClick={(e) => e.preventDefault()}
+                    />
                 </div>
 
                 {/* Title - Made bold/semi-bold */}
