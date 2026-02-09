@@ -239,7 +239,7 @@ export default function HeroTitle({
     };
 
     return (
-        <section className="relative flex items-center justify-center mt-[70px] px-4 py-8 md:py-12">
+        <section className="relative flex items-center justify-center px-4 md:py-12">
             <div className="relative z-10 text-center max-w-3xl">
 
 
