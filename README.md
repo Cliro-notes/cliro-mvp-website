@@ -2,6 +2,11 @@
 Este repositorio sirve para todo lo que modificara el DOM y todo lo que se use directamente de la extension o con lo que el usuario interactue. \
 Se desarrollara en Next.JS por si facil manejo de API y de SEO (para se encontrados de forma sencilla en Google)
 
+## Correr el Proyecto:
+```bash
+npm install lucide-react
+```
+
 ## Estructura / Arquitectura
 Website que servira para presentar el proyecto y mas que nada para manejar la lista de espera para usuarios interesados. \
 OnePage + waitlist (no auth, no passwords, cero fricción) \
