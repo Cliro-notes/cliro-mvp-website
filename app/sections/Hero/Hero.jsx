@@ -189,7 +189,7 @@ export default function Hero() {
     };
 
     return (
-        <div className="relative">
+        <div className="relative ">
             {/* Hero Title Section - Now includes the waitlist form */}
             <HeroTitle
                 onShowFullForm={handleShowFullForm}

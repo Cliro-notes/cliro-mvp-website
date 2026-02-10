@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { COLORS, OPACITY, TYPOGRAPHY } from "./constants";
 import WaitlistForm from "./WaitlistForm";
 import { getPublicConfig } from "../../utils/api";
@@ -22,10 +22,6 @@ export default function HeroTitle({
     onToggleLanguage,
     onSubmit
 }) {
-    const [description, setDescription] = useState(
-        "The intelligent note-taking extension that transforms how you capture and organize information. Cliro seamlessly integrates with your browser to make research, learning, and productivity effortless."
-    );
-    const [isEditing, setIsEditing] = useState(false);
     const [email, setEmail] = useState("");
     const [tempForm, setTempForm] = useState({
         email: "",
@@ -35,11 +31,19 @@ export default function HeroTitle({
     });
     const [backendConfig, setBackendConfig] = useState(null);
     const [isLoadingConfig, setIsLoadingConfig] = useState(true);
+    const [countdown, setCountdown] = useState({
+        days: 0,
+        hours: 0,
+        minutes: 0,
+        seconds: 0,
+        isLive: false
+    });
 
-    const editableRef = useRef(null);
-    const emailInputRef = useRef(null);
-    const lastHtmlRef = useRef("");
-    const videoRef = useRef(null);
+    // Target date: February 13, 2026 at 2:00 PM CST (Central Standard Time)
+    const targetDate = new Date('2026-02-13T14:00:00-06:00');
+
+    // Static description
+    const description = "The intelligent note-taking extension that transforms how you capture and organize information. Cliro seamlessly integrates with your browser to make research, learning, and productivity effortless.";
 
     // Fetch backend config on component mount
     useEffect(() => {
@@ -57,73 +61,45 @@ export default function HeroTitle({
         fetchConfig();
     }, []);
 
-    // Initialize video to play in loop
+    // Countdown timer
     useEffect(() => {
-        if (videoRef.current) {
-            videoRef.current.play().catch(e => {
-                console.log('Video autoplay failed:', e);
-            });
-        }
-    }, []);
+        const calculateTimeLeft = () => {
+            const now = new Date();
+            const difference = targetDate.getTime() - now.getTime();
 
-    // Handle click outside to save
-    useEffect(() => {
-        const handleClickOutside = (e) => {
-            if (isEditing && editableRef.current && !editableRef.current.contains(e.target)) {
-                setIsEditing(false);
+            if (difference > 0) {
+                const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+                setCountdown({
+                    days,
+                    hours,
+                    minutes,
+                    seconds,
+                    isLive: false
+                });
+            } else {
+                // Countdown has ended - show "Live Now!"
+                setCountdown({
+                    days: 0,
+                    hours: 0,
+                    minutes: 0,
+                    seconds: 0,
+                    isLive: true
+                });
             }
         };
 
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, [isEditing]);
+        // Calculate immediately
+        calculateTimeLeft();
 
-    // Set cursor position when editing starts
-    useEffect(() => {
-        if (isEditing && editableRef.current) {
-            lastHtmlRef.current = editableRef.current.innerHTML;
-            editableRef.current.focus();
+        // Update every second
+        const timer = setInterval(calculateTimeLeft, 1000);
 
-            const range = document.createRange();
-            const selection = window.getSelection();
-            range.selectNodeContents(editableRef.current);
-            range.collapse(false);
-            selection.removeAllRanges();
-            selection.addRange(range);
-        }
-    }, [isEditing]);
-
-    const handleDoubleClick = (e) => {
-        e.stopPropagation();
-        setIsEditing(true);
-    };
-
-    const handleClick = (e) => {
-        if (!isEditing) {
-            setIsEditing(true);
-        }
-    };
-
-    const handleInput = (e) => {
-        setDescription(e.currentTarget.textContent);
-        lastHtmlRef.current = e.currentTarget.innerHTML;
-    };
-
-    const handleKeyDown = (e) => {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            document.execCommand('insertLineBreak');
-            return;
-        }
-
-        if (e.key === 'Escape') {
-            if (editableRef.current) {
-                editableRef.current.innerHTML = lastHtmlRef.current;
-            }
-            setIsEditing(false);
-            e.preventDefault();
-        }
-    };
+        return () => clearInterval(timer);
+    }, []);
 
     const handleJoinWaitlist = (e) => {
         e.preventDefault();
@@ -238,15 +214,26 @@ export default function HeroTitle({
         }
     };
 
+    // Format the target date for display
+    const formattedDate = targetDate.toLocaleDateString('en-US', {
+        weekday: 'long',
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric'
+    });
+
+    const formattedTime = targetDate.toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: '2-digit',
+        timeZoneName: 'short'
+    });
+
     return (
         <section className="relative flex items-center justify-center px-4 md:py-12">
             <div className="relative z-10 text-center max-w-3xl">
-
-
-                {/* Video Section - Added between description and email form */}
-                <div className="relative max-w-[225px] mx-auto overflow-hidden rounded-xl">
+                {/* Video Section */}
+                <div className="relative max-w-[225px] mx-auto overflow-hidden rounded-xl mb-8">
                     <video
-                        ref={videoRef}
                         src="/cliroHorizontal.mp4"
                         className="w-full h-auto"
                         autoPlay
@@ -256,14 +243,13 @@ export default function HeroTitle({
                         disablePictureInPicture
                         disableRemotePlayback
                         style={{
-                            pointerEvents: 'none', // Disable user interaction
-                            userSelect: 'none', // Prevent selection
+                            pointerEvents: 'none',
+                            userSelect: 'none',
                         }}
-                        onContextMenu={(e) => e.preventDefault()} // Disable right-click
+                        onContextMenu={(e) => e.preventDefault()}
                     >
                         Your browser does not support the video tag.
                     </video>
-                    {/* Overlay to prevent any interaction */}
                     <div
                         className="absolute inset-0 pointer-events-auto cursor-default"
                         onClick={(e) => e.preventDefault()}
@@ -271,7 +257,7 @@ export default function HeroTitle({
                     />
                 </div>
 
-                {/* Title - Made bold/semi-bold */}
+                {/* Title */}
                 <h1 className="text-4xl md:text-6xl font-semibold mb-3 tracking-tight"
                     style={{
                         fontFamily: TYPOGRAPHY.fontSans,
@@ -283,40 +269,93 @@ export default function HeroTitle({
                     note Chrome extension
                 </h1>
 
-                {/* Editable Description */}
+                {/* Countdown Timer */}
+                <div className="max-w-md mx-auto pt-8 pb-6">
+                    {!countdown.isLive ? (
+                        <div className="flex justify-center items-center gap-2 md:gap-4">
+                            <div className="text-center">
+                                <div className="text-2xl md:text-3xl font-bold font-mono"
+                                    style={{ color: COLORS.dark }}>
+                                    {countdown.days.toString().padStart(2, '0')}
+                                </div>
+                                <div className="text-xs font-mono mt-1"
+                                    style={{ color: OPACITY.dark40 }}>
+                                    DAYS
+                                </div>
+                            </div>
+
+                            <div className="text-xl font-mono"
+                                style={{ color: OPACITY.dark30 }}>
+                                :
+                            </div>
+
+                            <div className="text-center">
+                                <div className="text-2xl md:text-3xl font-bold font-mono"
+                                    style={{ color: COLORS.dark }}>
+                                    {countdown.hours.toString().padStart(2, '0')}
+                                </div>
+                                <div className="text-xs font-mono mt-1"
+                                    style={{ color: OPACITY.dark40 }}>
+                                    HOURS
+                                </div>
+                            </div>
+
+                            <div className="text-xl font-mono"
+                                style={{ color: OPACITY.dark30 }}>
+                                :
+                            </div>
+
+                            <div className="text-center">
+                                <div className="text-2xl md:text-3xl font-bold font-mono"
+                                    style={{ color: COLORS.dark }}>
+                                    {countdown.minutes.toString().padStart(2, '0')}
+                                </div>
+                                <div className="text-xs font-mono mt-1"
+                                    style={{ color: OPACITY.dark40 }}>
+                                    MINUTES
+                                </div>
+                            </div>
+
+                            <div className="text-xl font-mono"
+                                style={{ color: OPACITY.dark30 }}>
+                                :
+                            </div>
+
+                            <div className="text-center">
+                                <div className="text-2xl md:text-3xl font-bold font-mono"
+                                    style={{ color: COLORS.dark }}>
+                                    {countdown.seconds.toString().padStart(2, '0')}
+                                </div>
+                                <div className="text-xs font-mono mt-1"
+                                    style={{ color: OPACITY.dark40 }}>
+                                    SECONDS
+                                </div>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="py-4 px-6 rounded-lg"
+                            style={{
+                                backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                                border: `1px dashed rgba(16, 185, 129, 0.3)`,
+                            }}>
+                            <div className="text-sm font-mono"
+                                style={{ color: OPACITY.dark40 }}>
+                                Cliro is now available. Join the waitlist for early access!
+                            </div>
+                        </div>
+                    )}
+                </div>
+
+                {/* Static Description */}
                 <div className="relative max-w-2xl mx-auto mb-8">
-                    <div
-                        ref={editableRef}
-                        className="text-base md:text-lg leading-relaxed p-3 rounded transition-all duration-200 cursor-text select-text outline-none"
+                    <p className="text-base md:text-lg leading-relaxed p-3"
                         style={{
                             color: OPACITY.dark40,
                             fontFamily: TYPOGRAPHY.fontSans,
                             lineHeight: '1.7',
-                            minHeight: '90px',
-                            ...(isEditing && {
-                                backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                                borderBottom: `1px dashed ${OPACITY.dark20}`,
-                            }),
-                        }}
-                        contentEditable={isEditing}
-                        suppressContentEditableWarning
-                        onClick={handleClick}
-                        onDoubleClick={handleDoubleClick}
-                        onInput={handleInput}
-                        onKeyDown={handleKeyDown}
-                        onBlur={() => setIsEditing(false)}
-                        dangerouslySetInnerHTML={{ __html: description }}
-                    />
-
-                    {/* Edit hint */}
-                    {!isEditing && (
-                        <div className="absolute -bottom-5 left-1/2 transform -translate-x-1/2 opacity-0 hover:opacity-100 transition-opacity duration-200 pointer-events-none">
-                            <span className="text-xs font-mono"
-                                style={{ color: OPACITY.dark30 }}>
-                                Click to edit
-                            </span>
-                        </div>
-                    )}
+                        }}>
+                        {description}
+                    </p>
                 </div>
 
                 {/* Conditional rendering: Email form OR Waitlist form */}
@@ -326,7 +365,6 @@ export default function HeroTitle({
                         <div className="max-w-md mx-auto mb-6">
                             <form onSubmit={handleJoinWaitlist} className="flex flex-col sm:flex-row gap-3">
                                 <input
-                                    ref={emailInputRef}
                                     type="email"
                                     placeholder="Enter your email"
                                     value={email}

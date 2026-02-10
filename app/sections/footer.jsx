@@ -20,7 +20,7 @@ export default function Footer() {
               Twitter
             </a>
             <a
-              href="https://instagram.com"
+              href="https://www.instagram.com/clironotes/"
               target="_blank"
               rel="noopener noreferrer"
               className="font-mono text-xs text-black/40 transition-colors hover:text-black"
@@ -28,7 +28,7 @@ export default function Footer() {
               Instagram
             </a>
             <a
-              href="mailto:hello@cliro.app"
+              href="mailto:clironotes@outlook.com"
               className="font-mono text-xs text-black/40 transition-colors hover:text-black"
             >
               Contact
