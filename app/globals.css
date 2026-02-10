@@ -1,12 +1,12 @@
 @import "tailwindcss";
 
-@font-face {
+/* @font-face {
   font-family: "neue-haas-grotesk-display";
   src: url("/fonts/NHaasGroteskDSPro-65Md.otf");
   font-style: normal;
   font-weight: 600;
   font-display: swap;
-}
+} */
 
 html {
   font-family: "neue-haas-grotesk-display", sans-serif;
@@ -18,6 +18,7 @@ html {
     opacity: 0;
     transform: translateY(-12px) scale(0.97);
   }
+
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -29,6 +30,7 @@ html {
     opacity: 1;
     transform: translateY(0) scale(1);
   }
+
   to {
     opacity: 0;
     transform: translateY(-8px) scale(0.98);
@@ -46,26 +48,60 @@ html {
 }
 
 /* Stagger form fields inside dropdown */
-.dropdown-form > * {
+.dropdown-form>* {
   animation: dropdown-field-in 0.35s cubic-bezier(0.22, 1, 0.36, 1) backwards;
 }
-.dropdown-form > *:nth-child(1) { animation-delay: 0.05s; }
-.dropdown-form > *:nth-child(2) { animation-delay: 0.1s; }
-.dropdown-form > *:nth-child(3) { animation-delay: 0.15s; }
-.dropdown-form > *:nth-child(4) { animation-delay: 0.2s; }
-.dropdown-form > *:nth-child(5) { animation-delay: 0.25s; }
-.dropdown-form > *:nth-child(6) { animation-delay: 0.3s; }
-.dropdown-form > *:nth-child(7) { animation-delay: 0.35s; }
-.dropdown-form > *:nth-child(8) { animation-delay: 0.4s; }
-.dropdown-form > *:nth-child(9) { animation-delay: 0.45s; }
-.dropdown-form > *:nth-child(10) { animation-delay: 0.5s; }
-.dropdown-form > *:nth-child(n + 11) { animation-delay: 0.55s; }
+
+.dropdown-form>*:nth-child(1) {
+  animation-delay: 0.05s;
+}
+
+.dropdown-form>*:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.dropdown-form>*:nth-child(3) {
+  animation-delay: 0.15s;
+}
+
+.dropdown-form>*:nth-child(4) {
+  animation-delay: 0.2s;
+}
+
+.dropdown-form>*:nth-child(5) {
+  animation-delay: 0.25s;
+}
+
+.dropdown-form>*:nth-child(6) {
+  animation-delay: 0.3s;
+}
+
+.dropdown-form>*:nth-child(7) {
+  animation-delay: 0.35s;
+}
+
+.dropdown-form>*:nth-child(8) {
+  animation-delay: 0.4s;
+}
+
+.dropdown-form>*:nth-child(9) {
+  animation-delay: 0.45s;
+}
+
+.dropdown-form>*:nth-child(10) {
+  animation-delay: 0.5s;
+}
+
+.dropdown-form>*:nth-child(n + 11) {
+  animation-delay: 0.55s;
+}
 
 @keyframes dropdown-field-in {
   from {
     opacity: 0;
     transform: translateY(6px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
