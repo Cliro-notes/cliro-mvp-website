@@ -20,7 +20,7 @@ export default function Footer() {
               Twitter
             </a>
             <a
-              href="https://www.instagram.com/clironotes/"
+              href="https://www.instagram.com/cliro.tech/"
               target="_blank"
               rel="noopener noreferrer"
               className="font-mono text-xs text-black/40 transition-colors hover:text-black"

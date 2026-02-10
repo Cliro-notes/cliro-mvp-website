@@ -25,18 +25,6 @@ export const BackgroundElements = () => {
                 }}
             />
 
-            {/* Pencil marks */}
-            <div className="absolute top-1/4 left-[10%] w-16 h-0.5 opacity-10 transform -rotate-6"
-                style={{ backgroundColor: COLORS.dark }} />
-            <div className="absolute top-1/3 left-[15%] w-10 h-0.5 opacity-10 transform rotate-3"
-                style={{ backgroundColor: COLORS.dark }} />
-            <div className="absolute top-1/2 right-[20%] w-12 h-0.5 opacity-10 transform -rotate-12"
-                style={{ backgroundColor: COLORS.dark }} />
-            <div className="absolute bottom-1/4 left-[25%] w-14 h-0.5 opacity-10 transform rotate-45"
-                style={{ backgroundColor: COLORS.dark }} />
-            <div className="absolute top-3/4 right-[15%] w-8 h-0.5 opacity-10 transform rotate-30"
-                style={{ backgroundColor: COLORS.dark }} />
-
             {/* Icons - adjusted opacity for full-site background */}
             <div className="absolute top-1/5 right-[15%] w-8 h-8 opacity-[0.03]">
                 <Pencil className="w-full h-full" style={{ color: COLORS.dark }} />

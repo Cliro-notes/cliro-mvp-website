@@ -190,7 +190,7 @@ export default function Hero() {
 
     return (
         <div className="relative ">
-            {/* Hero Title Section - Now includes the waitlist form */}
+            {/* Hero Title Section */}
             <HeroTitle
                 onShowFullForm={handleShowFullForm}
                 dropdownOpen={dropdownOpen}

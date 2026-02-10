@@ -229,7 +229,7 @@ export default function HeroTitle({
     });
 
     return (
-        <section className="relative flex items-center justify-center px-4 md:py-12">
+        <section className="relative flex mt-20 md:mt-0 items-center justify-center px-4 md:py-12">
             <div className="relative z-10 text-center max-w-3xl">
                 {/* Video Section */}
                 <div className="relative max-w-[225px] mx-auto overflow-hidden rounded-xl mb-8">
@@ -370,11 +370,10 @@ export default function HeroTitle({
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     onKeyDown={handleEmailKeyDown}
-                                    className="flex-1 h-11 px-4 text-sm rounded-lg outline-none transition-all"
+                                    className="px-4 text-center h-15 md:h-11 text-sm rounded-lg outline-none transition-all block"
                                     style={{
                                         border: `1px dashed ${OPACITY.dark20}`,
                                         color: COLORS.dark,
-                                        backgroundColor: 'rgba(255, 255, 255, 0.8)',
                                         transition: 'all 200ms ease',
                                     }}
                                     onFocus={(e) => {
