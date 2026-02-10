@@ -42,7 +42,7 @@ export default function VideoSection({
             >
                 <video
                     ref={onVideoRef}
-                    src="/cliroFinalVideo.mp4"
+                    src="/cliro-presentation.mp4"
                     className="w-full h-full object-contain"
                     poster="/flowanimation3.gif"
                     loop

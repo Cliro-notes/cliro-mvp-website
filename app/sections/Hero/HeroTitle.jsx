@@ -247,7 +247,7 @@ export default function HeroTitle({
                 <div className="relative max-w-[225px] mx-auto overflow-hidden rounded-xl">
                     <video
                         ref={videoRef}
-                        src="/cliro-presentation.mp4"
+                        src="/cliroHorizontal.mp4"
                         className="w-full h-auto"
                         autoPlay
                         loop
